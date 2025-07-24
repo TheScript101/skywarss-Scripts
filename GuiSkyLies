@@ -1,0 +1,136 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "SkyLies"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Drag Function
+local function makeDraggable(frame, handle)
+	local dragging = false
+	local dragInput, mousePos, framePos
+
+	handle.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			mousePos = input.Position
+			framePos = frame.Position
+
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	handle.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+			local delta = input.Position - mousePos
+			frame.Position = framePos + UDim2.new(0, delta.X, 0, delta.Y)
+		end
+	end)
+end
+
+-- Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 300, 0, 250)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -125)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+mainFrame.Visible = true
+
+-- Corner
+local corner = Instance.new("UICorner", mainFrame)
+corner.CornerRadius = UDim.new(0, 10)
+
+-- Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 35)
+title.BackgroundTransparency = 1
+title.Text = "SkyLies"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextStrokeTransparency = 0
+title.Parent = mainFrame
+
+-- Minimize Button
+local minimize = Instance.new("TextButton")
+minimize.Size = UDim2.new(0, 25, 0, 25)
+minimize.Position = UDim2.new(1, -30, 0, 5)
+minimize.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+minimize.Text = "-"
+minimize.Font = Enum.Font.GothamBold
+minimize.TextSize = 18
+minimize.TextColor3 = Color3.new(1, 1, 1)
+minimize.Parent = mainFrame
+Instance.new("UICorner", minimize)
+
+-- Scroll list
+local buttonList = Instance.new("ScrollingFrame")
+buttonList.Size = UDim2.new(1, -20, 1, -50)
+buttonList.Position = UDim2.new(0, 10, 0, 40)
+buttonList.CanvasSize = UDim2.new(0, 0, 0, 0)
+buttonList.ScrollBarThickness = 4
+buttonList.BackgroundTransparency = 1
+buttonList.Parent = mainFrame
+
+local uiList = Instance.new("UIListLayout", buttonList)
+uiList.SortOrder = Enum.SortOrder.LayoutOrder
+uiList.Padding = UDim.new(0, 6)
+
+-- Minimized toggle button
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Size = UDim2.new(0, 100, 0, 40)
+toggleBtn.Position = UDim2.new(0, 20, 0.5, -20)
+toggleBtn.Text = "SkyLies"
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 18
+toggleBtn.TextColor3 = Color3.new(1, 1, 1)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+toggleBtn.Visible = false
+toggleBtn.Parent = screenGui
+Instance.new("UICorner", toggleBtn)
+
+makeDraggable(mainFrame, title)
+makeDraggable(toggleBtn, toggleBtn)
+
+-- Minimize Logic
+minimize.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	toggleBtn.Visible = true
+end)
+
+toggleBtn.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	toggleBtn.Visible = false
+end)
+
+-- Auto-update scroll size
+uiList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	buttonList.CanvasSize = UDim2.new(0, 0, 0, uiList.AbsoluteContentSize.Y)
+end)
+
+-- Spawn Button Function
+local function spawnButton(text)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, 0, 0, 35)
+	btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	btn.Text = text
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 16
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Parent = buttonList
+	Instance.new("UICorner", btn)
+	return btn
+end
+
+-- Example use: spawn a new button
+local b = spawnButton("Test Button")
+b.MouseButton1Click:Connect(function()
+     print("Button clicked!")
+end)
