@@ -369,3 +369,22 @@ for tool, _ in pairs(toggles) do
 end
 
 monitorToolChanges()
+
+------------------------ MAKE MEGA VIP TELEPORT WORK ------------------------
+local teleportDestination = Vector3.new(-0.09993171691894531, 177.9993438720703, 53.77894973754883)
+local teleportsFolder = workspace:WaitForChild("Lobby"):WaitForChild("MegaVIPRoom"):WaitForChild("Teleport"):WaitForChild("Enter")
+
+for _, part in pairs(teleportsFolder:GetChildren()) do
+    if part.Name == "Teleporter A" and part:FindFirstChild("TeleportMegaVIPEnter") then
+        part.Touched:Connect(function(hit)
+            local character = hit.Parent
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                local rootPart = character:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    rootPart.CFrame = CFrame.new(teleportDestination)
+                end
+            end
+        end)
+    end
+end
