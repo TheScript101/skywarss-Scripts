@@ -191,7 +191,7 @@ local toggles = {
     Heal = false,
     Speed = false,
     Shield = false,
-    Highjump = false,
+    HighJump = false,
 }
 
 
@@ -228,22 +228,22 @@ border.Color = Color3.new(0, 0, 0) -- black
 border.Thickness = 1
 border.Parent = healBtn
 
--- Add SpeedPotionBtn (left of HealPotionBtn)
-local speedBtn = createToolButton("Speed", "1843072067", UDim2.new(0.66, 0, 0.72, 0), "SpeedPotionBtn")
+-- Add SpeedPotionBtn (above of HealPotionBtn)
+local speedBtn = createToolButton("Speed", "1843072067", UDim2.new(0.72, 0, 0.58, 0), "SpeedPotionBtn")
 local border = Instance.new("UIStroke")
 border.Color = Color3.new(0, 0, 0) -- black
 border.Thickness = 1
 border.Parent = speedBtn
 
 -- Add JumpPotionBtn (above SpeedPotionBtn)
-local jumpBtn = createToolButton("Highjump", "1843065736", UDim2.new(0.66, 0, 0.58, 0), "JumpPotionBtn")
+local jumpBtn = createToolButton("HighJump", "1843065736", UDim2.new(0.66, 0, 0.58, 0), "JumpPotionBtn")
 local border = Instance.new("UIStroke")
 border.Color = Color3.new(0, 0, 0) -- black
 border.Thickness = 1
 border.Parent = jumpBtn
 
 -- Add ShieldBtn (right of JumpPotionBtn)
-local shieldBtn = createToolButton("Shield", "1843056725", UDim2.new(0.72, 0, 0.58, 0), "ShieldBtn")
+local shieldBtn = createToolButton("Shield", "1843056725", UDim2.new(0.66, 0, 0.72, 0), "ShieldBtn")
 local border = Instance.new("UIStroke")
 border.Color = Color3.new(0, 0, 0) -- black
 border.Thickness = 1
@@ -255,7 +255,7 @@ local axeBtn  = createToolButton("Axe",  "399887168", UDim2.new(0.78, 0, 0.72, 0
 local buttons = {
     Heal = healBtn,
     Axe  = axeBtn,
-    Highjump = jumpBtn,
+    HighJump = jumpBtn,
     Speed  = speedBtn,
     Shield = shieldBtn,
 }
