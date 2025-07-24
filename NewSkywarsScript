@@ -251,6 +251,9 @@ local axeBtn  = createToolButton("Axe",  "399887168", UDim2.new(0.78, 0, 0.72, 0
 local buttons = {
     Heal = healBtn,
     Axe  = axeBtn,
+    High jump = jumpBtn,
+    Speed  = speedBtn,
+    Shield = shieldBtn,
 }
 
 -- // FUNCTIONS
