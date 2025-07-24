@@ -202,7 +202,7 @@ local function createToolButton(toolName, imageId, position, buttonName)
     btn.Size = UDim2.new(0.05, 0, 0.10, 0)
     btn.BackgroundColor3 = Color3.new(1, 1, 1)
     btn.BackgroundTransparency = 0.2
-    btn.Image = "rbxassetid://" .. imageId
+    btn.Image = "rblxthumb://type=Asset&id=" .. imageId .. "&w=420&h=420"
     btn.ImageColor3 = Color3.new(1, 1, 1)
     btn.AutoButtonColor = false
     btn.Visible = false
