@@ -1,1 +1,1 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/TheScript101/Bedwars-Scripts/refs/heads/main/OldSkywarsScripy"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TheScript101/skywarss-Scripts/refs/heads/main/OldSkywarsScripy"))()
