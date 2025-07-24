@@ -188,11 +188,12 @@ local humanoid = character:WaitForChild("Humanoid")
 -- // STATE
 local toggles = {
     Axe = false,
-    Heal = false,    
-    ["High jump"] = false,
+    Heal = false,
     Speed = false,
-    Shield = false, 
+    Shield = false,
+    ["High jump"] = false,
 }
+
 
 -- // GUI
 local screenGui = Instance.new("ScreenGui")
