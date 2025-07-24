@@ -207,15 +207,7 @@ local function createToolButton(toolName, imageId, position, buttonName)
     btn.Size = UDim2.new(0.05, 0, 0.10, 0)
     btn.BackgroundColor3 = Color3.new(1, 1, 1)
     btn.BackgroundTransparency = 0.2
-    
-    if toolName == "Heal" then
-        -- Use rblxthumb for Heal potion
-        btn.Image = "rblxthumb://type=Asset&id=" .. imageId .. "&w=420&h=420"
-    else
-        -- Use regular rbxassetid for others like Axe
-        btn.Image = "rbxassetid://" .. imageId
-    end
-    
+    btn.Image = "rbxassetid://" .. imageId -- ✅ always use regular asset ID
     btn.ImageColor3 = Color3.new(1, 1, 1)
     btn.AutoButtonColor = false
     btn.Visible = false
@@ -223,8 +215,9 @@ local function createToolButton(toolName, imageId, position, buttonName)
 end
 
 
+
 -- // CREATE BUTTONS
-local healBtn = createToolButton("Heal", "128441102", UDim2.new(0.72, 0, 0.72, 0), "HealPotionBtn")
+local healBtn = createToolButton("Heal", "1843006229", UDim2.new(0.72, 0, 0.72, 0), "HealPotionBtn")
 -- Add black border to HealPotionBtn only
 local border = Instance.new("UIStroke")
 border.Color = Color3.new(0, 0, 0) -- black
