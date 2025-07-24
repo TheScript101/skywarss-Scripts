@@ -129,8 +129,16 @@ local function spawnButton(text)
 	return btn
 end
 
+-- add spawnToggle(text)
+
 -- Example use: spawn a new button
-local b = spawnButton("Test Button")
+b = spawnButton("Test Button")
 b.MouseButton1Click:Connect(function()
+     print("Button clicked!")
+end)
+
+-- Example use: spawn a new toggle
+a = spawnToggle("Test Button")
+-- ??? 
      print("Button clicked!")
 end)
