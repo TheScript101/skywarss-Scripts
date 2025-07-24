@@ -129,7 +129,32 @@ local function spawnButton(text)
 	return btn
 end
 
--- add spawnToggle(text)
+-- Spawn Toggle Function
+local function spawnToggle(text)
+	local toggleBtn = Instance.new("TextButton")
+	toggleBtn.Size = UDim2.new(1, 0, 0, 35)
+	toggleBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	toggleBtn.Text = text
+	toggleBtn.Font = Enum.Font.Gotham
+	toggleBtn.TextSize = 16
+	toggleBtn.TextColor3 = Color3.new(1, 1, 1)
+	toggleBtn.Parent = buttonList
+	Instance.new("UICorner", toggleBtn)
+
+	local toggled = false
+
+	toggleBtn.MouseButton1Click:Connect(function()
+		toggled = not toggled
+		if toggled then
+			toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255) -- Cyan when on
+		else
+			toggleBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60) -- Original when off
+		end
+		print(text .. " toggled:", toggled)
+	end)
+
+	return toggleBtn
+end
 
 -- Example use: spawn a new button
 b = spawnButton("Test Button")
@@ -137,8 +162,59 @@ b.MouseButton1Click:Connect(function()
      print("Button clicked!")
 end)
 
--- Example use: spawn a new toggle
+------------------------ MAKE MEGA VIP TELEPORT ------------------------
 a = spawnToggle("Test Button")
--- ??? 
-     print("Button clicked!")
+-- Teleport destination
+local teleportDestination = Vector3.new(-0.0999, 177.9993, 53.7789)
+local teleportsFolder = workspace:WaitForChild("Lobby"):WaitForChild("MegaVIPRoom"):WaitForChild("Teleport"):WaitForChild("Enter")
+
+-- Create Mega VIP toggle button
+local megaVIPBtn = spawnButton("Mega VIP")
+buttons["MegaVIP"] = megaVIPBtn
+toggles["MegaVIP"] = false
+
+local teleportConnection
+
+local function updateButtonAppearance(tool)
+    local btn = buttons[tool]
+    if btn then
+        btn.BackgroundColor3 = toggles[tool] and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(60, 60, 60)
+    end
+end
+
+megaVIPBtn.MouseButton1Click:Connect(function()
+    toggles["MegaVIP"] = not toggles["MegaVIP"]
+    updateButtonAppearance("MegaVIP")
+
+    if toggles["MegaVIP"] then
+        -- Connect teleport touch event(s)
+        teleportConnection = {}
+
+        for _, part in pairs(teleportsFolder:GetChildren()) do
+            if part.Name == "Teleporter A" and part:FindFirstChild("TeleportMegaVIPEnter") then
+                local conn = part.Touched:Connect(function(hit)
+                    local character = hit.Parent
+                    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+                    if humanoid then
+                        local rootPart = character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            rootPart.CFrame = CFrame.new(teleportDestination)
+                        end
+                    end
+                end)
+                table.insert(teleportConnection, conn)
+            end
+        end
+
+    else
+        -- Disconnect teleport touch event(s)
+        if teleportConnection then
+            for _, conn in ipairs(teleportConnection) do
+                conn:Disconnect()
+            end
+            teleportConnection = nil
+        end
+    end
 end)
+
+updateButtonAppearance("MegaVIP")
