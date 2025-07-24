@@ -1,3 +1,24 @@
+local gui = player:WaitForChild("PlayerGui")
+for _, g in ipairs(gui:GetChildren()) do
+    if g:IsA("ScreenGui") then
+        local promo = g:FindFirstChild("PromoFrame")
+        if promo then
+            local tb = promo:FindFirstChild("TextBoxCode")
+            if tb then
+                tb.Text = "Sword"
+            end
+
+            local btn = promo:FindFirstChild("RedeemButton")
+            if btn and btn:IsA("TextButton") then
+                for _, conn in pairs(getconnections(btn.MouseButton1Click)) do
+                    conn:Fire()
+                end
+            end
+        end
+    end
+end
+
+
 -- Combined persistent script v3 with extra LocalScript removals and multi‐GUI support
 
 -- 0) Aggressively remove unwanted LocalScripts
