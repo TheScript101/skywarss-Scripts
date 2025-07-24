@@ -163,13 +163,12 @@ b.MouseButton1Click:Connect(function()
 end)
 
 ------------------------ MAKE MEGA VIP TELEPORT ------------------------
-a = spawnToggle("Test Button")
 -- Teleport destination
 local teleportDestination = Vector3.new(-0.0999, 177.9993, 53.7789)
 local teleportsFolder = workspace:WaitForChild("Lobby"):WaitForChild("MegaVIPRoom"):WaitForChild("Teleport"):WaitForChild("Enter")
 
 -- Create Mega VIP toggle button
-local megaVIPBtn = spawnButton("Mega VIP")
+local megaVIPBtn = spawnToggle("Mega VIP")
 buttons["MegaVIP"] = megaVIPBtn
 toggles["MegaVIP"] = false
 
