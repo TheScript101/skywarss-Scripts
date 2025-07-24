@@ -1,0 +1,162 @@
+-- // SERVICES & PLAYER
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- // STATE
+local toggles = {
+    Axe = false,
+    Heal = false,
+}
+
+-- // GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ToolToggleGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = CoreGui
+
+-- // CREATE BUTTON FUNCTION
+local function createToolButton(toolName, imageId, position, buttonName)
+    local btn = Instance.new("ImageButton")
+    btn.Name = buttonName
+    btn.Parent = screenGui
+    btn.AnchorPoint = Vector2.new(0, 0)
+    btn.Position = position
+    btn.Size = UDim2.new(0.05, 0, 0.10, 0)
+    btn.BackgroundColor3 = Color3.new(1, 1, 1)
+    btn.BackgroundTransparency = 0.2
+    btn.Image = "rbxassetid://" .. imageId
+    btn.ImageColor3 = Color3.new(1, 1, 1)
+    btn.AutoButtonColor = false
+    btn.Visible = false
+    return btn
+end
+
+-- // CREATE BUTTONS
+local healBtn = createToolButton("Heal", "128441102", UDim2.new(0.72, 0, 0.72, 0), "HealPotionBtn")
+-- Add black border to HealPotionBtn only
+local border = Instance.new("UIStroke")
+border.Color = Color3.new(0, 0, 0) -- black
+border.Thickness = 2
+border.Parent = healBtn
+
+local axeBtn  = createToolButton("Axe",  "399887168", UDim2.new(0.78, 0, 0.72, 0), "PikAxeBtn")
+
+-- // TOOL DATA
+local buttons = {
+    Heal = healBtn,
+    Axe  = axeBtn,
+}
+
+-- // FUNCTIONS
+local function updateButtonAppearance(tool)
+    local btn = buttons[tool]
+    if btn then
+        btn.BackgroundColor3 = toggles[tool] and Color3.fromRGB(0, 255, 255) or Color3.new(1, 1, 1)
+    end
+end
+
+local function updateButtonVisibility(tool)
+    local hasTool = player.Backpack:FindFirstChild(tool) or character:FindFirstChild(tool)
+    local btn = buttons[tool]
+    if btn then
+        btn.Visible = hasTool and true or false
+    end
+end
+
+local function equipTool(tool)
+    local found = player.Backpack:FindFirstChild(tool) or character:FindFirstChild(tool)
+    if found and found:IsA("Tool") then
+        humanoid:EquipTool(found)
+    end
+end
+
+local function unequipTool(tool)
+    local held = character:FindFirstChild(tool)
+    if held then
+        humanoid:UnequipTools()
+    end
+end
+
+-- // TOGGLE BUTTONS
+for toolName, btn in pairs(buttons) do
+    btn.MouseButton1Click:Connect(function()
+        toggles[toolName] = not toggles[toolName]
+        if toggles[toolName] then
+            equipTool(toolName)
+        else
+            unequipTool(toolName)
+        end
+        updateButtonAppearance(toolName)
+    end)
+end
+
+-- // MONITOR TOOL CHANGES
+local function monitorToolChanges()
+    local function handleToolAdded(child)
+        if child:IsA("Tool") then
+            local name = child.Name
+            if buttons[name] then
+                updateButtonVisibility(name)
+
+                -- Manual click
+                if not toggles[name] then
+                    toggles[name] = true
+                    updateButtonAppearance(name)
+                end
+
+                -- Untoggle others
+                for other, _ in pairs(toggles) do
+                    if other ~= name and toggles[other] then
+                        toggles[other] = false
+                        updateButtonAppearance(other)
+                    end
+                end
+            end
+        end
+    end
+
+    local function handleToolRemoved(child)
+        local name = child.Name
+        if buttons[name] then
+            updateButtonVisibility(name)
+
+            if toggles[name] then
+                toggles[name] = false
+                updateButtonAppearance(name)
+            end
+        end
+    end
+
+    character.ChildAdded:Connect(handleToolAdded)
+    character.ChildRemoved:Connect(handleToolRemoved)
+    player.Backpack.ChildAdded:Connect(function(child)
+        if buttons[child.Name] then updateButtonVisibility(child.Name) end
+    end)
+    player.Backpack.ChildRemoved:Connect(function(child)
+        if buttons[child.Name] then updateButtonVisibility(child.Name) end
+    end)
+end
+
+-- // CHARACTER RESET
+player.CharacterAdded:Connect(function(char)
+    character = char
+    humanoid = character:WaitForChild("Humanoid")
+    for tool, _ in pairs(toggles) do
+        toggles[tool] = false
+        updateButtonAppearance(tool)
+        updateButtonVisibility(tool)
+    end
+    monitorToolChanges()
+end)
+
+-- // INITIALIZE
+for tool, _ in pairs(toggles) do
+    updateButtonAppearance(tool)
+    updateButtonVisibility(tool)
+end
+
+monitorToolChanges()
