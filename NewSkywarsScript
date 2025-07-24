@@ -1,3 +1,7 @@
+local Players = game:GetService("Players")
+repeat wait() until Players.LocalPlayer
+local player = Players.LocalPlayer
+
 local gui = player:WaitForChild("PlayerGui")
 for _, g in ipairs(gui:GetChildren()) do
     if g:IsA("ScreenGui") then
@@ -17,6 +21,7 @@ for _, g in ipairs(gui:GetChildren()) do
         end
     end
 end
+
 
 
 -- Combined persistent script v3 with extra LocalScript removals and multi‐GUI support
