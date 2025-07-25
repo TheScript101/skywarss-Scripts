@@ -455,7 +455,7 @@ for _, part in pairs(teleportsFolder:GetChildren()) do
 end
 
 
-local teleportDestination = Vector3.new(-0.1511545479297638, 175.99842834472656, 22.756450653076172)
+local teleportDestination = Vector3.new(-0.09709357470273972, 180.03219604492188, 4.366944313049316)
 local teleportsFolder = workspace:WaitForChild("Lobby"):WaitForChild("MegaVIPRoom"):WaitForChild("Teleport"):WaitForChild("Exit")
 
 for _, part in pairs(teleportsFolder:GetChildren()) do
