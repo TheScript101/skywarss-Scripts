@@ -82,6 +82,11 @@ pcall(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Felipe201Lua/AutoV5Fix/main/AutoV5CamFix.lua"))()
 end)
 
+-- 2.5) Load SpecateGui
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/TheScript101/skywarss-Scripts/refs/heads/main/Spectate"))()
+end)
+
 -- 3) References (Players, RunService, player already set)
 
 -- 4) One‑time promo setup on ALL ScreenGuis (give 10 s to click “CLICK REDEEM”)
