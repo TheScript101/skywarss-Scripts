@@ -1,0 +1,188 @@
+-- Spectate GUI with dynamic player list and camera button removal
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+-- Configuration
+local guiPosition = UDim2.new(0.5, 0, 0.149999991, 0) -- precise center as requested
+
+-- Track spectate list and index
+local spectateList = {}
+local currentIndex = 1
+local spectating = false
+
+-- Utility to update spectateList
+local function rebuildList()
+    spectateList = {}
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= player then
+            table.insert(spectateList, plr)
+        end
+    end
+    if #spectateList == 0 then
+        currentIndex = 0
+    else
+        currentIndex = 1
+    end
+end
+
+-- Continuously remove unwanted CameraButton GUI elements
+spawn(function()
+    while task.wait(3) do
+        for _, guiObj in ipairs(player.PlayerGui:GetChildren()) do
+            if guiObj:IsA("ScreenGui") then
+                local camBtn = guiObj:FindFirstChild("CameraButton")
+                if camBtn then camBtn:Destroy() end
+            end
+        end
+    end
+end)
+
+-- Create our spectate GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "SpectateGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player.PlayerGui
+
+local frame = Instance.new("Frame")
+frame.Name = "SpectateFrame"
+frame.Size = UDim2.new(0, 300, 0, 80)
+frame.AnchorPoint = Vector2.new(0.5, 0)
+frame.Position = guiPosition
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BackgroundTransparency = 1
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+local frame2 = Instance.new("Frame")
+frame2.Name = "TextFrame"
+frame2.Size = UDim2.new(0, 300, 0, 30)
+frame2.AnchorPoint = Vector2.new(0.5, 0)
+frame2.Position = UDim2.new(0.5, 0, 1, -20)
+frame2.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame2.BackgroundTransparency = 0.1
+frame2.BorderSizePixel = 0
+frame2.Visible = false
+frame2.Parent = frame
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 6)
+corner.Parent = frame2
+
+-- Camera Toggle Button
+local camButton = Instance.new("TextButton")
+camButton.Name = "CamToggle"
+camButton.Text = "📷"
+camButton.Font = Enum.Font.GothamBold
+camButton.TextSize = 24
+camButton.Size = UDim2.new(0, 40, 0, 40)
+camButton.Position = UDim2.new(0, 130, 0, 20)
+camButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+camButton.BackgroundTransparency = 0.5
+camButton.Parent = frame
+Instance.new("UICorner", camButton).CornerRadius = UDim.new(0, 6)
+
+-- Back Button
+local backBtn = Instance.new("TextButton")
+backBtn.Name = "BackBtn"
+backBtn.Text = "<"
+backBtn.Font = Enum.Font.GothamBold
+backBtn.TextSize = 24
+backBtn.Size = UDim2.new(0, 40, 0, 40)
+backBtn.Position = UDim2.new(0, 80, 0, 20)
+backBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+backBtn.BackgroundTransparency = 0.5
+backBtn.Parent = frame
+Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0, 6)
+
+-- Next Button
+local nextBtn = Instance.new("TextButton")
+nextBtn.Name = "NextBtn"
+nextBtn.Text = ">"
+nextBtn.Font = Enum.Font.GothamBold
+nextBtn.TextSize = 24
+nextBtn.Size = UDim2.new(0, 40, 0, 40)
+nextBtn.AnchorPoint = Vector2.new(1, 0)
+nextBtn.Position = UDim2.new(1, -80, 0, 20)
+nextBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+nextBtn.BackgroundTransparency = 0.5
+nextBtn.Parent = frame
+Instance.new("UICorner", nextBtn).CornerRadius = UDim.new(0, 6)
+
+-- Name Labels
+local nameLabel = Instance.new("TextLabel")
+nameLabel.Name = "NameLabel"
+nameLabel.Size = UDim2.new(1, -40, 0, 20)
+nameLabel.Position = UDim2.new(0.07, 0, 1, -20)
+nameLabel.BackgroundTransparency = 1
+nameLabel.TextColor3 = Color3.new(1,1,1)
+nameLabel.Font = Enum.Font.Gotham
+nameLabel.TextSize = 16
+nameLabel.Text = ""
+nameLabel.Parent = frame
+
+-- Spectate current target
+local function spectateCurrent()
+    if not spectating or currentIndex < 1 or currentIndex > #spectateList then
+        -- Return camera to self
+        local char = player.Character
+        if char and char:FindFirstChild("Humanoid") then
+            camera.CameraSubject = char.Humanoid
+        end
+        nameLabel.Text = ""
+        return
+    end
+    local target = spectateList[currentIndex]
+    if target.Character and target.Character:FindFirstChild("Humanoid") then
+        camera.CameraSubject = target.Character.Humanoid
+        nameLabel.Text = string.format("%s (@%s)", target.DisplayName, target.Name)
+    end
+end
+
+-- Update spectate list on join/leave
+Players.PlayerAdded:Connect(function()
+    if spectating then rebuildList() end
+end)
+Players.PlayerRemoving:Connect(function()
+    if spectating then
+        rebuildList()
+        if currentIndex > #spectateList then currentIndex = 1 end
+        spectateCurrent()
+    end
+end)
+
+-- Handle respawn re-spectate
+Players.PlayerAdded:Connect(function(plr)
+    plr.CharacterAdded:Connect(function()
+        if spectating and spectateList[currentIndex] == plr then
+            spectateCurrent()
+        end
+    end)
+end)
+
+-- Button behaviors
+camButton.MouseButton1Click:Connect(function()
+    spectating = not spectating
+    frame2.Visible = spectating      -- show/hide the text frame
+    if spectating then
+        rebuildList()
+    end
+    spectateCurrent()
+end)
+
+
+nextBtn.MouseButton1Click:Connect(function()
+    if not spectating or #spectateList == 0 then return end
+    currentIndex = currentIndex % #spectateList + 1
+    spectateCurrent()
+end)
+
+backBtn.MouseButton1Click:Connect(function()
+    if not spectating or #spectateList == 0 then return end
+    currentIndex = (currentIndex - 2) % #spectateList + 1
+    spectateCurrent()
+end)
+
+-- Initialize list
+rebuildList()
