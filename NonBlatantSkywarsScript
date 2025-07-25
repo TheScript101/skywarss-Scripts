@@ -132,11 +132,6 @@ task.spawn(function()
     end)
 end)
 
--- 1) Load SkyClient
-pcall(function()
-    loadstring(game:HttpGet("https://rawscripts.net/raw/SKYWARS-CLASSIC-SkyClient-33583"))()
-end)
-
 -- 2) Load AutoV5CamFix
 pcall(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Felipe201Lua/AutoV5Fix/main/AutoV5CamFix.lua"))()
