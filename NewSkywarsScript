@@ -1,3 +1,63 @@
+-- SERVICES
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+-- VARIABLES
+local player = Players.LocalPlayer
+local originalSensitivity
+
+-- FUNCTION TO GET TOUCH SENSITIVITY
+local function getCameraSensitivity()
+    if UserInputService.TouchEnabled then
+        local touchModule = player:FindFirstChild("PlayerModule")
+        if touchModule then
+            local cameraModule = touchModule:FindFirstChild("CameraModule")
+            if cameraModule and cameraModule:IsA("ModuleScript") then
+                local cameraController = require(cameraModule)
+                if cameraController and cameraController.TouchCamera then
+                    return cameraController.TouchCamera.sensitivity
+                end
+            end
+        end
+    end
+    return nil
+end
+
+-- FUNCTION TO SET TOUCH SENSITIVITY
+local function setCameraSensitivity(value)
+    if UserInputService.TouchEnabled then
+        local touchModule = player:FindFirstChild("PlayerModule")
+        if touchModule then
+            local cameraModule = touchModule:FindFirstChild("CameraModule")
+            if cameraModule and cameraModule:IsA("ModuleScript") then
+                local cameraController = require(cameraModule)
+                if cameraController and cameraController.TouchCamera then
+                    cameraController.TouchCamera.sensitivity = value
+                end
+            end
+        end
+    end
+end
+
+-- INITIALIZE & MONITOR
+task.wait(1)
+
+originalSensitivity = getCameraSensitivity()
+if originalSensitivity then
+    print("Original sensitivity stored:", originalSensitivity)
+
+    RunService.RenderStepped:Connect(function()
+        local current = getCameraSensitivity()
+        if current and current ~= originalSensitivity then
+            setCameraSensitivity(originalSensitivity)
+        end
+    end)
+else
+    warn("Could not detect original sensitivity. Are you using touch controls?")
+end
+
+
 local Players = game:GetService("Players")
 repeat wait() until Players.LocalPlayer
 local player = Players.LocalPlayer
