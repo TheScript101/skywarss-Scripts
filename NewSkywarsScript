@@ -436,7 +436,7 @@ end
 monitorToolChanges()
 
 ------------------------ MEGA VIP ENTER TELEPORT ------------------------
-local enterDestination = Vector3.new(0, 172.5, 70)
+local enterDestination = Vector3.new(0, 175, 70)
 local enterTeleportsFolder = workspace:WaitForChild("Lobby"):WaitForChild("MegaVIPRoom"):WaitForChild("Teleport"):WaitForChild("Enter")
 
 for _, part in pairs(enterTeleportsFolder:GetChildren()) do
