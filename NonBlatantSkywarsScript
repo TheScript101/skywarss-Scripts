@@ -134,7 +134,7 @@ end)
 
 -- 2) Load AutoV5CamFix
 pcall(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Felipe201Lua/AutoV5Fix/main/AutoV5CamFix.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/TheScript101/skywarss-Scripts/refs/heads/main/AutoV5CamFix.lua.txt"))()
 end)
 
 -- 2.5) Load SpecateGui
